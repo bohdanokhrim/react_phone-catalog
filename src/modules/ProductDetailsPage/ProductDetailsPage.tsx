@@ -71,6 +71,13 @@ export const ProductDetailsPage = () => {
   const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, [productId]);
+
+  useEffect(() => {
     let isCancelled = false;
 
     setIsLoading(true);
@@ -140,7 +147,7 @@ export const ProductDetailsPage = () => {
   };
 
   const handleBack = () => {
-    navigate(-1);
+    navigate(`/${product?.category || 'phones'}`);
   };
 
   if (isLoading) {

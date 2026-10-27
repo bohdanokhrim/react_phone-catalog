@@ -6,6 +6,12 @@ const API_URL = `${import.meta.env.BASE_URL}api/`;
 
 let productsCache: Promise<Product[]> | null = null;
 
+let cachedProducts: Product[] | null = null;
+
+export const getCachedProducts = (): Product[] | null => {
+  return cachedProducts;
+};
+
 const categoryCache: Partial<Record<Category, Promise<ProductDetails[]>>> = {};
 
 async function loadJSON<T>(filename: string): Promise<T> {
@@ -19,12 +25,22 @@ async function loadJSON<T>(filename: string): Promise<T> {
 }
 
 export const getProducts = (): Promise<Product[]> => {
-  if (!productsCache) {
-    productsCache = loadJSON<Product[]>('products.json').catch(error => {
-      productsCache = null;
+  if (cachedProducts) {
+    return Promise.resolve(cachedProducts);
+  }
 
-      throw error;
-    });
+  if (!productsCache) {
+    productsCache = loadJSON<Product[]>('products.json')
+      .then(products => {
+        cachedProducts = products;
+
+        return products;
+      })
+      .catch(error => {
+        productsCache = null;
+
+        throw error;
+      });
   }
 
   return productsCache;

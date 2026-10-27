@@ -1,13 +1,23 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { getProducts } from '../services/products';
-import { Product } from '../types/Product';
+import { getCachedProducts, getProducts } from '../services/products';
 
+import type { Product } from '../types/Product';
 import type { Category } from '../types/Category';
 
 export const useProducts = (category: Category) => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const getInitialProducts = () => {
+    const cached = getCachedProducts();
+
+    return cached
+      ? cached.filter(product => product.category === category)
+      : [];
+  };
+
+  const [products, setProducts] = useState<Product[]>(getInitialProducts);
+  const [isLoading, setIsLoading] = useState(
+    () => getCachedProducts() === null,
+  );
   const [error, setError] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
 
@@ -18,17 +28,23 @@ export const useProducts = (category: Category) => {
   useEffect(() => {
     let isCancelled = false;
 
+    const cached = getCachedProducts();
+
+    if (cached) {
+      setProducts(cached.filter(product => product.category === category));
+      setIsLoading(false);
+      setError(false);
+
+      return;
+    }
+
     setIsLoading(true);
     setError(false);
 
     getProducts()
       .then(data => {
         if (!isCancelled) {
-          const filteredProducts = data.filter(
-            product => product.category === category,
-          );
-
-          setProducts(filteredProducts);
+          setProducts(data.filter(product => product.category === category));
         }
       })
       .catch(() => {
