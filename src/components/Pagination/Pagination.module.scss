@@ -41,3 +41,14 @@
     border-color: colors.$text-primary;
   }
 }
+
+.dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 32px;
+  color: colors.$text-secondary;
+  user-select: none;
+}
+
