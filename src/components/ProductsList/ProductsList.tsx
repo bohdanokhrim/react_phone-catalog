@@ -5,12 +5,19 @@ import styles from './ProductsList.module.scss';
 
 type Props = {
   products: Product[];
+  limitedDiscounts?: boolean;
 };
 
-export const ProductsList = ({ products }: Props) => (
-  <div className={styles.products}>
-    {products.map(product => (
-      <ProductCard key={product.id} product={product} />
-    ))}
-  </div>
-);
+export const ProductsList = ({ products, limitedDiscounts = false }: Props) => {
+  return (
+    <div className={styles.products}>
+      {products.map(product => (
+        <ProductCard
+          key={product.id}
+          product={product}
+          limitedDiscounts={limitedDiscounts}
+        />
+      ))}
+    </div>
+  );
+};

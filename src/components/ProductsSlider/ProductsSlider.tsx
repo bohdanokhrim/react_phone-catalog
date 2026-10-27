@@ -8,9 +8,14 @@ import styles from './ProductsSlider.module.scss';
 type Props = {
   title: string;
   products: Product[];
+  showDiscount?: boolean;
 };
 
-export const ProductsSlider = ({ title, products }: Props) => {
+export const ProductsSlider = ({
+  title,
+  products,
+  showDiscount = true,
+}: Props) => {
   const listRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: number) => {
@@ -63,7 +68,7 @@ export const ProductsSlider = ({ title, products }: Props) => {
       <div className={styles.productsSlider} ref={listRef}>
         {products.map(product => (
           <div className={styles.productItem} key={product.id}>
-            <ProductCard product={product} />
+            <ProductCard product={product} showDiscount={showDiscount} />
           </div>
         ))}
       </div>

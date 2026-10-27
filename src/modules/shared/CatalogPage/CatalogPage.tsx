@@ -222,7 +222,7 @@ export const CatalogPage = ({ category, title }: Props) => {
                 )}
               </div>
 
-              <ProductsList products={visibleProducts} />
+              <ProductsList products={visibleProducts} limitedDiscounts />
 
               {totalPages > 1 && (
                 <Pagination

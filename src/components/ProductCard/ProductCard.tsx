@@ -8,9 +8,15 @@ import styles from './ProductCard.module.scss';
 
 type Props = {
   product: Product;
+  showDiscount?: boolean;
+  limitedDiscounts?: boolean;
 };
 
-export const ProductCard = ({ product }: Props) => {
+export const ProductCard = ({
+  product,
+  showDiscount = true,
+  limitedDiscounts = false,
+}: Props) => {
   const { addToCart, toggleFavorite, isInCart, isFavorite } = useShop();
 
   const addedToCart = isInCart(product.itemId);
@@ -25,6 +31,11 @@ export const ProductCard = ({ product }: Props) => {
   const handleToggleFavorite = () => {
     toggleFavorite(product);
   };
+
+  const hasDiscount =
+    showDiscount &&
+    (!limitedDiscounts || product.id % 4 === 0) &&
+    product.price < product.fullPrice;
 
   return (
     <article className={styles.card}>
@@ -41,9 +52,11 @@ export const ProductCard = ({ product }: Props) => {
       </Link>
 
       <div className={styles.prices}>
-        <span className={styles.price}>${product.price}</span>
+        <span className={styles.price}>
+          ${hasDiscount ? product.price : product.fullPrice}
+        </span>
 
-        {product.price < product.fullPrice && (
+        {hasDiscount && (
           <span className={styles.fullPrice}>${product.fullPrice}</span>
         )}
       </div>
